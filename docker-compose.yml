@@ -1,0 +1,33 @@
+version: '3'
+
+services:
+  
+  mongo:
+    image: mongo
+    env_file: nodemon.json
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=$MONGODB_USER
+      - MONGO_INITDB_ROOT_PASSWORD=$MONGODB_PASSWORD
+    ports:
+      - "27017:27017"
+    volumes:
+      - .:/usr/app/mongo
+    networks:
+      - mongo-compose-network
+
+  api:
+    depends_on:
+        - mongo
+    build: .
+    command: npm start
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/usr/app
+    networks:
+      - mongo-compose-network
+  
+
+networks: 
+    mongo-compose-network:
+      driver: bridge
